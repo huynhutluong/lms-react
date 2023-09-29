@@ -1,0 +1,100 @@
+body {
+    background-color: white;
+}
+
+a {
+    text-decoration: none;
+}
+
+.Page {
+    display: flex;
+}
+
+.Nav {
+    width: 20%;
+    flex: 20%;
+    text-align: center;
+    height: 100vh;
+    overflow-y: scroll;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+}
+
+.Main {
+    width: 80%;
+    flex: 80%;
+    height: 100vh;
+    margin: 10px;
+}
+
+.Navigation {
+    display: flex;
+    flex-direction: column;
+}
+
+.Navigation > a {
+    padding: 10px 5px;
+}
+
+.Navigation > a:hover {
+    background-color: rgb(15, 186, 129);
+    color: white;
+}
+
+.header-logo {
+    margin-top: 10px;
+}
+
+.nav-link {
+    display: inline-flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-link > b {
+    margin-left: 10px;
+}
+
+
+.Page > ::-webkit-scrollbar {
+    width: 3px;
+}
+
+.Page > ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.Page > ::-webkit-scrollbar-thumb {
+    background: rgba(15, 186, 129, 0.7);
+}
+
+.center-row {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.center-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.space-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.space-around {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.margin-25 {
+    margin: 25px;
+}

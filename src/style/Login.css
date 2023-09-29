@@ -1,0 +1,52 @@
+.login-page {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    height: 95vh;
+}
+
+.login-page-2 {
+    background-color: white;
+    overflow: hidden;
+    box-shadow: 5px 10px gray;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 400px;
+    height: 475px;
+    justify-content: space-between;
+}
+
+.login-title {
+    margin-top: 25px;
+}
+
+.login-form {
+    margin: 25px;
+}
+
+.login-input {
+    margin-top: 5px;
+}
+
+.remember {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn {
+    color: white;
+    background-color: navy;
+    border: 1px solid navy;
+    border-radius: 25px;
+}
+
+.btn:hover {
+    background-color: white;
+    color: navy;
+    border: 1px solid navy;
+}
