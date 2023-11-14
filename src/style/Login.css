@@ -1,3 +1,7 @@
+.Login {
+    background: linear-gradient(lightskyblue, white) fixed;
+}
+
 .login-page {
     display: flex;
     text-align: center;

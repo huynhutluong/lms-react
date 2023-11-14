@@ -1,5 +1,20 @@
-body {
+html, body {
     background-color: white;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ui {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ui.button {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 a {
@@ -32,11 +47,7 @@ a {
     flex-direction: column;
 }
 
-.Navigation > a {
-    padding: 10px 5px;
-}
-
-.Navigation > a:hover {
+.nav-link:hover {
     background-color: rgb(15, 186, 129);
     color: white;
 }
@@ -50,6 +61,7 @@ a {
     text-align: center;
     justify-content: center;
     align-items: center;
+    padding: 10px 5px;
 }
 
 .nav-link > b {
@@ -97,4 +109,82 @@ a {
 
 .margin-25 {
     margin: 25px;
+}
+
+.card {
+    width: 175px;
+    height: 175px;
+    color: white;
+    background-color:rgb(15, 186, 129);
+    border: 1px solid rgb(15, 186, 129);
+}
+
+.card:hover {
+    opacity: 70%;
+}
+
+.course-list-link {
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color:rgb(15, 186, 129);
+}
+
+.course-list-link > a {
+    color: white;
+}
+
+.course-list-link:hover {
+    opacity: 50%;
+}
+
+.test-timer {
+    width: 200px;
+    min-height: 200px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border: 1px solid black;
+}
+
+.test-timer-button {
+    width: 5rem;
+    min-height: 2rem;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border: 1px solid black;
+}
+
+.timer-content {
+    margin: 7px;
+    width: 25px;
+    height: 25px;
+    border: 1px solid forestgreen;
+}
+
+.btn-test-submit {
+    border: 1px solid forestgreen;
+    background-color: white;
+    width: 5rem;
+    height: 2rem;
+}
+
+.btn-test-submit:hover {
+    background-color: forestgreen;
+    color: white;
+}
+
+.timer-content:hover {
+    background-color: forestgreen;
+    color: white;
+    opacity: 50%;
+}
+
+.my-modal {
+    top: auto !important;
+    bottom: auto !important;
+    right: auto !important;
+    left: auto !important;
+    position: relative !important;
+    height: 9rem !important;
 }

@@ -23,7 +23,6 @@ const Course = () => {
             setKlasse(data);
         })
         .catch(e => {
-            navigate('/uclass/' + id);
         })
 
     const fetchSection = async () => {
@@ -45,6 +44,31 @@ const Course = () => {
             .then(account => setAccount(account));
     }
 
+    async function createSection() {
+        await fetch(`http://localhost:8080/api/v1/sections/${id}`, {
+            mode: "cors",
+            method: "POST"
+        }).then(() => navigate(0))
+    }
+
+    async function deleteFile(e) {
+        e.preventDefault();
+        let file_id = e.target[0].value
+        await fetch(`http://localhost:8080/api/v1/file/delete/${file_id}`, {
+            mode: "cors",
+            method: "DELETE"
+        }).then(() => navigate(0))
+    }
+
+    async function deletePost(e) {
+        e.preventDefault();
+        let post_id = e.target[0].value
+        await fetch(`http://localhost:8080/api/v1/posts/${post_id}`, {
+            mode: "cors",
+            method: "DELETE"
+        }).then(() => navigate(0))
+    }
+
     useEffect(() => {
         getAccount().then()
         fetchClass().then()
@@ -55,42 +79,58 @@ const Course = () => {
         {isReady
             ?
             <div>
-                <div>
-                    {klasse.course_name && <h1>{klasse.course_name + ' - ' + klasse.class_id}</h1>}
-                    {account.account_role === 'lecturer' &&
-                        <button className='btn float-end'>Chuyển sang trang quản trị</button>}
-                </div>
-                <hr/>
+                {klasse.course_name && <h1>{klasse.course_name + ' - ' + klasse.class_id}</h1>}
                 {
                     section.map(
                         section => (
                             <div key={section.section_id}>
                                 <h4>{section.section_name}</h4>
+                                    <div className='d-flex align-items-center justify-content-center border rounded p-1 bg-success m-2'>
+                                        <Link to={'/content/insert/' + section.section_id} className='text-white'>Thêm nội dung mới</Link>
+                                    </div>
 
                                 <div className='mb-2'>
                                     {section.posts.length > 0 && <b>Bài đăng: </b>}
                                     {section.posts.map(post => {
                                         return <div className='p-1 bg-body-secondary rounded'>
-                                            <b><p className='m-1'>{post.post_title}</p></b>
-                                            <p className='d-flex justify-content-between mb-1 opacity-75'>
-                                                <i className='mt-2'>„ {post.post_description} “</i>
-                                                <i className='opacity-50 pe-5 mt-3'>Đã đăng
-                                                    lúc: {Date(post.created_at).slice(0, 25)}</i>
-                                            </p>
+                                            <div>
+                                                <b><p className='m-1'>{post.post_title}</p></b>
+                                                <p className='d-flex justify-content-between mb-1 opacity-75'>
+                                                    <i className='mt-2'>„ {post.post_description} “</i>
+                                                    <i className='opacity-50 pe-5 mt-3'>Đã đăng
+                                                        lúc: {Date(post.created_at).slice(0, 25)}</i>
+                                                </p>
+                                            </div>
+                                            <div className='d-flex justify-content-end align-items-end'>
+                                                <Button className='bg-warning text-white'>Chỉnh sửa</Button>
+                                                <form onSubmit={deletePost}>
+                                                    <input type="text" value={post.post_id} hidden/>
+                                                    <Button className='bg-danger text-white'>Xóa</Button>
+                                                </form>
+                                            </div>
                                         </div>
                                     })}
                                 </div>
 
                                 <div>
-                                    {(section.files || []).length > 0 ? <b>Files đính kèm: </b> : <></>}
+                                    {(section.files || []).length > 0 ? <b className='mb-1'>Files đính kèm: </b> : <></>}
                                     {section.files.map(file => {
                                         return file
                                             ?
-                                            <div className='mb-1'>
-                                                <Link target='_blank' to={'http://localhost:8080/' + file.file_address}
-                                                      key={file.file_id}>
-                                                    {file.file_name}
-                                                </Link>
+                                            <div className='d-flex justify-content-between align-items-center my-2'>
+                                                <div>
+                                                    <Link target='_blank' to={'http://localhost:8080/' + file.file_address}
+                                                          key={file.file_id}>
+                                                        {file.file_name}
+                                                    </Link>
+                                                </div>
+                                                <div>
+                                                    <form onSubmit={deleteFile}>
+                                                        <input type="text" value={file.file_id} hidden/>
+                                                        <button className='float-end text-danger me-5 border-0 bg-transparent'><h4>Xóa</h4></button>
+                                                    </form>
+
+                                                </div>
                                             </div>
                                             :
                                             <></>
@@ -114,6 +154,10 @@ const Course = () => {
                                                         </div>
                                                     </div>
                                                 </Link>
+                                                <div className='d-flex justify-content-end align-items-end'>
+                                                    <Button className='bg-warning text-white'>Chỉnh sửa</Button>
+                                                    <Button className='bg-danger text-white'>Xóa</Button>
+                                                </div>
                                             </div>
                                             :
                                             <></>
@@ -125,6 +169,10 @@ const Course = () => {
                         )
                     )
                 }
+                <div className='d-flex justify-content-center align-items-center border rounded'>
+                    <button type='button' className='border-0 bg-transparent py-2' onClick={createSection}><h4>Thêm đề mục mới +</h4></button>
+                </div>
+
             </div>
             :
             <div>Đang chờ</div>}
