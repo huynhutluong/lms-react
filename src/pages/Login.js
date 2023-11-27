@@ -24,15 +24,12 @@ const Login = () => {
             .then(res => res.json())
             .then(res => {
                 login({
+                    account_id: res.account_id,
                     account_username: res.account_username,
                     token: res.token
                 });
             })
             .catch(error => alert("Loi dang nhap"))
-        // login({
-        //     account_username: data.get("username"),
-        //     account_password: data.get("password")
-        // });
     };
 
     return <div className="login-page">

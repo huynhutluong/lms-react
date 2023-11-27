@@ -53,7 +53,8 @@ const Course = () => {
         fetchClass();
         }, []);
 
-    return (<div>
+
+    return (<div className='d-flex flex-column align-items-center justify-content-center'>
         <h1>Bạn chưa đăng ký vào lớp học này.</h1>
         <button className="btn btn-success" onClick={handleClick}>Đăng ký?</button>
     </div>);

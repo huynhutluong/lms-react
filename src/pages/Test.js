@@ -1,8 +1,8 @@
 import {useParams, useNavigate, Link} from "react-router-dom";
 import {useAuth} from "../hooks/useAuth";
 import {useEffect, useState} from "react";
-import Countdown from "../components/Countdown";
 import {Button, Confirm, Form} from "semantic-ui-react";
+import Countdown from "react-countdown";
 
 const Test = () => {
     let {user} = useAuth();
@@ -50,8 +50,12 @@ const Test = () => {
         }).then(res => res.json()).then(dt => console.log(dt)).then(() => navigate(`/testresult/${id}`))
     }
 
+    async function updateActivities() {
+        await fetch(`http://localhost:8080/activities?account_id=${user.account_id}&activity_type=Làm+kiểm+tra&activity_target=${window.location.pathname}`)
+    }
+
     useEffect(() => {
-        fetchTest().finally(() => setIsReady(true));
+        Promise.all([fetchTest(), updateActivities()]).finally(() => setIsReady(true));
     }, []);
 
     if (isReady) {
@@ -94,9 +98,11 @@ const Test = () => {
                                             })}
                                         </div>
                                     </div>
-                                    <div className='d-flex '>
+                                    <div className='d-flex flex-column'>
                                         <div className='text-center'>
-                                            {test.ended_at.slice(0,19)}
+                                            Còn lại:  &nbsp;
+                                            <Countdown date={new Date(test.ended_at)}>
+                                            </Countdown>
                                         </div>
                                         <Button className='ui button' onClick={() => setConfirmButton(true)}>
                                             Nộp bài

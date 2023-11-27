@@ -1,7 +1,7 @@
 import {useParams, useNavigate, Link} from "react-router-dom";
 import {useAuth} from "../hooks/useAuth";
 import {useEffect, useState} from "react";
-import {Button} from "semantic-ui-react";
+import {Button, Dimmer, Loader} from "semantic-ui-react";
 
 const Course = () => {
     let navigate = useNavigate();
@@ -45,10 +45,15 @@ const Course = () => {
             .then(account => setAccount(account));
     }
 
+    async function updateActivities(){
+        await fetch(`http://localhost:8080/activities?account_id=${user.account_id}&activity_type=Xem+trang&activity_target=${window.location.pathname}`)
+    }
+
     useEffect(() => {
-        getAccount().then()
-        fetchClass().then()
-        fetchSection().then().finally(() => setIsReady(true))
+        Promise.all([getAccount(),
+        fetchClass(),
+        fetchSection(),
+        updateActivities()]).finally(() => setIsReady(true))
     }, []);
 
     return <div>
@@ -108,9 +113,7 @@ const Course = () => {
                                                     <div className='p-2'>
                                                         <p>{test.test_name}</p>
                                                         <div>
-                                                            Bắt đầu lúc: {Date(test.test_start).slice(0, 25)}
-                                                            -
-                                                            Kết thúc vào: {Date(test.test_end).slice(0, 25)}
+                                                            Đã đăng lúc: {Date(test.created_at)}
                                                         </div>
                                                     </div>
                                                 </Link>
@@ -127,7 +130,11 @@ const Course = () => {
                 }
             </div>
             :
-            <div>Đang chờ</div>}
+            <div>
+                <Dimmer active>
+                    <Loader/>
+                </Dimmer>
+            </div>}
     </div>
 };
 

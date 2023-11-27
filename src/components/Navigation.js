@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 
 function Navigation() {
     let {user, logout} = useAuth();
-    let [account, setAccount] = useState([]);
+    let [account, setAccount] = useState({});
 
     async function getAccount() {
         await fetch("http://localhost:8080/login?account_username=" + user.account_username)
@@ -48,13 +48,18 @@ function Navigation() {
             {
                 account.account_role == 'lecturer' &&
                     <>
-                        <Link to="/users" className="nav-link">
+                        <Link to="/admin/users" className="nav-link">
                             <img src='/homework.png' alt="users" width="20px" height="20px"/>
                             <b>Quản lý người dùng</b>
                         </Link>
-                        <Link to="/courses" className="nav-link">
+                        <Link to="/lecturer/classes" className="nav-link">
                             <img src='/homework.png' alt="courses" width="20px" height="20px"/>
-                            <b>Quản lý khóa học</b>
+                            <b>Quản lý môn</b>
+                        </Link>
+
+                        <Link to="/admin/activities" className="nav-link">
+                            <img src='/homework.png' alt="courses" width="20px" height="20px"/>
+                            <b>Quản lý hoạt động</b>
                         </Link>
                     </>
             }

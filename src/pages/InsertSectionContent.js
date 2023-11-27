@@ -1,6 +1,6 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {Dropdown, Form, TextArea, Button} from "semantic-ui-react";
-import {useState} from "react";
+import {Dropdown, Form, TextArea, Button, Label, Dimmer, Loader} from "semantic-ui-react";
+import {useEffect, useState} from "react";
 import {useAuth} from "../hooks/useAuth";
 
 
@@ -10,6 +10,14 @@ const InsertSectionContent = () => {
     let {user} = useAuth();
     let [files, setFiles] = useState(null);
     let [content, setContent] = useState('');
+    let [isLoading, setIsLoading] = useState(true);
+    let testOption = [
+        {
+            key: 'ct467',
+            text: 'Môn Quản trị dữ liệu',
+            value: 'ct467'
+        }
+    ]
 
     function handleChange(e, data) {
         setContent(data.value)
@@ -54,69 +62,118 @@ const InsertSectionContent = () => {
         }).then(res => navigate(-1))
     }
 
+    async function updateActivities() {
+        await fetch(`http://localhost:8080/activities?account_id=${user.account_id}&activity_type=Xem+trang&activity_target=${window.location.pathname}`)
+    }
+
+    useEffect(() => {
+        Promise.all([updateActivities()]).finally(() => setIsLoading(false))
+    }, [])
 
     return <div>
-        <Dropdown
-            placeholder='Chọn nội dung'
-            fluid
-            selection
-            onChange={handleChange}
-            className='mb-5'
-            options={[{
-                key: 'Bài viết',
-                text: 'Bài viết',
-                value: 'Bài viết'
-            }, {
-                key: 'File',
-                text: 'File',
-                value: 'File'
-            }, {
-                key: 'Bài kiểm tra',
-                text: 'Bài kiểm tra',
-                value: 'Bài kiểm tra'
-            }]}
-        />
-        {content === 'Bài viết'
-            &&
-            <Form onSubmit={handlePosts}>
-                <TextArea placeholder='Nhập tiêu đề' className='mb-4' style={{ height: 50 }}/>
-                <TextArea placeholder='Nhập nội dung' />
-                <div className='d-flex justify-content-end align-items-center mt-3'>
-                    <Button>Đăng bài</Button>
-                </div>
-            </Form>
-        }
-
-        {content === 'File'
-            &&
-            <Form onSubmit={handleFile}>
-                <div>
-                    <input type="file" name='file' id='file' onChange={fileChange}/>
-                </div>
-                <div className='d-flex justify-content-end align-items-center mt-3'>
-                    <Button>Đăng file</Button>
-                </div>
-            </Form>
-        }
-
         {
-            files && <div>
-            <b>Thông tin file:</b>
-                <ul>
-                    <li>Name: {files.name}</li>
-                    <li>Type: {files.type}</li>
-                    <li>Size: {files.size} bytes</li>
-                </ul>
-            </div>
-        }
-
-        {content === 'Bài kiểm tra'
-            &&
-            <Form onSubmit={handleTest}>
+            isLoading
+                ?
                 <div>
-                    Nhập bài kiểm tra
+                    <Dimmer active>
+                        <Loader/>
+                    </Dimmer>
                 </div>
-            </Form>
+                :
+                <div>
+                    <Dropdown
+                        placeholder='Chọn nội dung'
+                        fluid
+                        selection
+                        onChange={handleChange}
+                        className='mb-5'
+                        options={[{
+                            key: 'Bài viết',
+                            text: 'Bài viết',
+                            value: 'Bài viết'
+                        }, {
+                            key: 'File',
+                            text: 'File',
+                            value: 'File'
+                        }, {
+                            key: 'Bài kiểm tra',
+                            text: 'Bài kiểm tra',
+                            value: 'Bài kiểm tra'
+                        }]}
+                    />
+                    {content === 'Bài viết'
+                        &&
+                        <Form onSubmit={handlePosts}>
+                            <TextArea placeholder='Nhập tiêu đề' className='mb-4' style={{height: 50}}/>
+                            <TextArea placeholder='Nhập nội dung'/>
+                            <div className='d-flex justify-content-end align-items-center mt-3'>
+                                <Button>Đăng bài</Button>
+                            </div>
+                        </Form>
+                    }
+
+                    {content === 'File'
+                        &&
+                        <Form onSubmit={handleFile}>
+                            <div>
+                                <input type="file" name='file' id='file' onChange={fileChange}/>
+                            </div>
+                            <div className='d-flex justify-content-end align-items-center mt-3'>
+                                <Button>Đăng file</Button>
+                            </div>
+                        </Form>
+                    }
+
+                    {
+                        files && <div>
+                            <b>Thông tin file:</b>
+                            <ul>
+                                <li>Name: {files.name}</li>
+                                <li>Type: {files.type}</li>
+                                <li>Size: {files.size} bytes</li>
+                            </ul>
+                        </div>
+                    }
+
+                    {content === 'Bài kiểm tra'
+                        &&
+                        <Form onSubmit={handleTest}>
+                            <div>
+                                <h1>Nhập bài kiểm tra</h1>
+                                <Form.Field>
+                                    <label>Nhập tiêu đề:</label>
+                                    <TextArea placeholder='Nhập tiêu đề' className='mb-4' style={{height: 50}}/>
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Chọn môn học:</label>
+                                    <Dropdown fluid selection options={testOption} className='my-2'/>
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Số câu hỏi dễ:</label>
+                                    <TextArea placeholder='Số câu hỏi dễ' className='mb-4' style={{height: 50}}/>
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Số câu hỏi trung bình:</label>
+                                    <TextArea placeholder='Số câu hỏi trung bình' className='mb-4'
+                                              style={{height: 50}}/>
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Số câu hỏi khó:</label>
+                                    <TextArea placeholder='Số câu hỏi khó' className='mb-4' style={{height: 50}}/>
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Thời gian làm bài tối đa: (phút)</label>
+                                    <TextArea placeholder='Thời gian làm bài' className='mb-4' style={{height: 50}}/>
+                                </Form.Field>
+                                <div className='d-flex justify-content-end align-items-center mt-3'>
+                                    <Button>Đăng nội dung</Button>
+                                </div>
+                            </div>
+                            <br/>
+                            <br/>
+                        </Form>
+                    }
+                </div>
         }
     </div>
 }
