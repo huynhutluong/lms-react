@@ -6,11 +6,13 @@ import {useAuth} from "../hooks/useAuth";
 const CourseList = () => {
     let {user} = useAuth();
     let [classes, setClasses] = useState([]);
+    let [q, setQ] = useState('');
     let [isLoading, setIsLoading] = useState(true);
 
     async function searchCourse(e) {
         e.preventDefault();
-        await fetch(`http://localhost:8080/api/v1/classes/q/${e.target[0].value}`)
+        await fetch(`http://localhost:8080/api/v1/classes/query/${q}`)
+            .then(res => res.json())
             .then(data => setClasses(data))
     }
 
@@ -23,6 +25,7 @@ const CourseList = () => {
     async function updateActivities() {
         await fetch(`http://localhost:8080/activities?account_id=${user.account_id}&activity_type=Xem+trang&activity_target=${window.location.pathname}`)
     }
+
 
     useEffect(() => {
         Promise.all([getAPIClasses(), updateActivities()]).finally(() => setIsLoading(false))
@@ -41,7 +44,7 @@ const CourseList = () => {
                 <div>
                     <div>
                         <form onSubmit={searchCourse} className='d-flex justify-content-center align-items-center mb-5'>
-                            <Input type="text"/>
+                            <Input type="text" value={q} onChange={(e) => setQ(e.target.value)}/>
                             <Button className='ms-3'>Tìm</Button>
                         </form>
                     </div>

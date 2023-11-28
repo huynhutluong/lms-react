@@ -49,12 +49,18 @@ const Course = () => {
         await fetch(`http://localhost:8080/activities?account_id=${user.account_id}&activity_type=Xem+trang&activity_target=${window.location.pathname}`)
     }
 
+    const activityFile = async (e) => {
+        await fetch(`http://localhost:8080/activities?account_id=${user.account_id}&activity_type=Xem+file&activity_target=${e.target.id}`)
+    }
+
     useEffect(() => {
         Promise.all([getAccount(),
         fetchClass(),
         fetchSection(),
         updateActivities()]).finally(() => setIsReady(true))
     }, []);
+
+
 
     return <div>
         {isReady
@@ -93,7 +99,7 @@ const Course = () => {
                                             ?
                                             <div className='mb-1'>
                                                 <Link target='_blank' to={'http://localhost:8080/' + file.file_address}
-                                                      key={file.file_id}>
+                                                      key={file.file_id} onClick={activityFile} id={file.file_id}>
                                                     {file.file_name}
                                                 </Link>
                                             </div>
