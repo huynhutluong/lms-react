@@ -35,8 +35,20 @@ const Test = () => {
         e.preventDefault();
         setConfirmButton(false)
 
-        // let question_id = Object.keys(selectedValues)
-        // let student_answers = Object.values(selectedValues)
+
+        await fetch(`http://localhost:8080/api/v1/tests/submit`, {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                st_id: id,
+                student_id: user.account_username,
+                answers: selectedValues
+            }),
+            headers: {'Content-type': 'application/json; charset=UTF-8'}
+        }).then(res => res.json()).then(dt => console.log(dt)).then(() => navigate(`/testresult/${id}`))
+    }
+
+    async function submitCountdown() {
 
         await fetch(`http://localhost:8080/api/v1/tests/submit`, {
             method: 'POST',
@@ -101,7 +113,7 @@ const Test = () => {
                                     <div className='d-flex flex-column'>
                                         <div className='text-center'>
                                             Còn lại:  &nbsp;
-                                            <Countdown date={new Date(test.ended_at)}>
+                                            <Countdown date={new Date(test.ended_at)} onComplete={submitCountdown}>
                                             </Countdown>
                                         </div>
                                         <Button className='ui button' onClick={() => setConfirmButton(true)}>

@@ -1,5 +1,5 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {Dropdown, Form, TextArea, Button, Label, Dimmer, Loader} from "semantic-ui-react";
+import {Dropdown, Form, TextArea, Button, Label, Dimmer, Loader, Input} from "semantic-ui-react";
 import {useEffect, useState} from "react";
 import {useAuth} from "../hooks/useAuth";
 
@@ -11,13 +11,17 @@ const InsertSectionContent = () => {
     let [files, setFiles] = useState(null);
     let [content, setContent] = useState('');
     let [isLoading, setIsLoading] = useState(true);
-    let testOption = [
-        {
-            key: 'ct467',
-            text: 'Môn Quản trị dữ liệu',
-            value: 'ct467'
-        }
-    ]
+    let [testOption, setTestOption] = useState({});
+    let [testForm, setTestForm] = useState({
+        section_id: id,
+        course_id: '',
+        test_name: '',
+        test_password: '',
+        test_time: '',
+        easy_questions: '',
+        medium_questions: '',
+        hard_questions: ''
+    })
 
     function handleChange(e, data) {
         setContent(data.value)
@@ -39,8 +43,29 @@ const InsertSectionContent = () => {
             }).then(res => navigate(-1))
     }
 
-    function handleTest(e) {
-        e.preventDefault();
+    const handleTest = async (e) => {
+        e.preventDefault()
+        const test = {
+            section_id: testForm.section_id,
+            course_id: testForm.course_id,
+            test_name: testForm.test_name,
+            test_password: testForm.test_password,
+            test_time: testForm.test_time * 1000 * 60,
+            easy_questions: parseInt(testForm.easy_questions),
+            medium_questions: parseInt(testForm.medium_questions),
+            hard_questions: parseInt(testForm.hard_questions),
+        }
+
+        await fetch('http://localhost:8080/api/v1/tests', {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify(test),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        })
+            .finally(() => navigate(-1))
+            .catch((e) => console.log(e))
     }
 
     async function handlePosts(e) {
@@ -62,12 +87,18 @@ const InsertSectionContent = () => {
         }).then(res => navigate(-1))
     }
 
+    const fetchCourse = async () => {
+        await fetch('http://localhost:8080/api/v1/courses')
+            .then(res => res.json())
+            .then(data => setTestOption(data))
+    }
+
     async function updateActivities() {
         await fetch(`http://localhost:8080/activities?account_id=${user.account_id}&activity_type=Xem+trang&activity_target=${window.location.pathname}`)
     }
 
     useEffect(() => {
-        Promise.all([updateActivities()]).finally(() => setIsLoading(false))
+        Promise.all([updateActivities(), fetchCourse()]).finally(() => setIsLoading(false))
     }, [])
 
     return <div>
@@ -140,31 +171,57 @@ const InsertSectionContent = () => {
                         <Form onSubmit={handleTest}>
                             <div>
                                 <h1>Nhập bài kiểm tra</h1>
-                                <Form.Field>
-                                    <label>Nhập tiêu đề:</label>
-                                    <TextArea placeholder='Nhập tiêu đề' className='mb-4' style={{height: 50}}/>
-                                </Form.Field>
-                                <Form.Field>
-                                    <label>Chọn môn học:</label>
-                                    <Dropdown fluid selection options={testOption} className='my-2'/>
-                                </Form.Field>
-                                <Form.Field>
-                                    <label>Số câu hỏi dễ:</label>
-                                    <TextArea placeholder='Số câu hỏi dễ' className='mb-4' style={{height: 50}}/>
-                                </Form.Field>
-                                <Form.Field>
-                                    <label>Số câu hỏi trung bình:</label>
-                                    <TextArea placeholder='Số câu hỏi trung bình' className='mb-4'
-                                              style={{height: 50}}/>
-                                </Form.Field>
-                                <Form.Field>
-                                    <label>Số câu hỏi khó:</label>
-                                    <TextArea placeholder='Số câu hỏi khó' className='mb-4' style={{height: 50}}/>
-                                </Form.Field>
-                                <Form.Field>
-                                    <label>Thời gian làm bài tối đa: (phút)</label>
-                                    <TextArea placeholder='Thời gian làm bài' className='mb-4' style={{height: 50}}/>
-                                </Form.Field>
+                                <hr/>
+                                    <Form.Input
+                                        label='Tên bài kiểm tra'
+                                        placeholder='Nhập tên bài kiểm tra'
+                                        value={testForm.test_name}
+                                        onChange={(e, {value}) => setTestForm({...testForm, test_name: e.target.value})}
+                                    />
+                                <label><b>Chọn môn học</b></label>
+                                    <Dropdown
+                                        fluid
+                                        selection
+                                        label='Môn học'
+                                        placeholder='Chọn môn học'
+                                        options={testOption}
+                                        className='my-2'
+                                        value={testForm.course_id}
+                                        onChange={(e, {value}) => setTestForm({...testForm, course_id: value})}
+                                    />
+                                <Form.Input
+                                    label='Thời gian (/phút)'
+                                    placeholder='Nhập thời gian theo phút'
+                                    value={testForm.test_time}
+                                    onChange={(e, {value}) => setTestForm({...testForm, test_time: e.target.value})}
+                                />
+                                <Form.Input
+                                    label='Mật khẩu bài kiểm tra'
+                                    placeholder='Nhập mật khẩu'
+                                    value={testForm.test_password}
+                                    onChange={(e, {value}) => setTestForm({...testForm, test_password: e.target.value})}
+                                />
+                                <Form.Input
+                                    label='Số câu hỏi dễ'
+                                    type='number'
+                                    placeholder='Nhập số câu hỏi dễ'
+                                    value={testForm.easy_questions}
+                                    onChange={(e, {value}) => setTestForm({...testForm, easy_questions: e.target.value})}
+                                />
+                                <Form.Input
+                                    label='Số câu hỏi khá'
+                                    type='number'
+                                    placeholder='Nhập số câu hỏi khá'
+                                    value={testForm.medium_questions}
+                                    onChange={(e, {value}) => setTestForm({...testForm, medium_questions: e.target.value})}
+                                />
+                                <Form.Input
+                                    label='Số câu hỏi khó'
+                                    type='number'
+                                    placeholder='Nhập số câu hỏi khó'
+                                    value={testForm.hard_questions}
+                                    onChange={(e, {value}) => setTestForm({...testForm, hard_questions: e.target.value})}
+                                />
                                 <div className='d-flex justify-content-end align-items-center mt-3'>
                                     <Button>Đăng nội dung</Button>
                                 </div>

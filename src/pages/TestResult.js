@@ -1,7 +1,7 @@
 import {useParams, useNavigate, Link} from "react-router-dom";
 import {useAuth} from "../hooks/useAuth";
 import {useEffect, useState} from "react";
-import Countdown from "../components/Countdown";
+import Countdown from "react-countdown";
 
 const TestResult = () => {
     let {user} = useAuth();
@@ -10,6 +10,7 @@ const TestResult = () => {
     let [isLoading, setIsLoading] = useState(true);
     let [account, setAccount] = useState({});
     let [results, setResults] = useState([]);
+    let [test, setTest] = useState([]);
     let textOption = ['A. ', 'B. ', 'C. ', 'D. ', 'E. ', 'F. ', 'G. ', 'H', 'J', 'K. ']
 
 
@@ -19,6 +20,16 @@ const TestResult = () => {
             .then(account => setAccount(account));
     }
 
+    async function fetchNumber() {
+        await fetch(`http://localhost:8080/api/v1/test_result/test/${id}`, {
+            mode: "cors"
+        })
+            .then(res => res.json())
+            .then(data => {
+                setTest(data)
+            })
+    }
+
     async function getResult() {
         await fetch(`http://localhost:8080/api/v1/test_result/${id}`)
             .then(res => res.json())
@@ -26,20 +37,10 @@ const TestResult = () => {
     }
 
     useEffect(() => {
-        getResult().then()
-        getAccount().then().finally(() => {
-            setIsLoading(false);
-        })
+        Promise.all([getResult(),
+        getAccount(), fetchNumber()]).finally(() => setIsLoading(false))
     }, []);
 
-    // if (!isLoading) {
-    //     const correctAnswers = results.map(result => ({
-    //         question_id: result.question_id,
-    //         is_correct: result.student_answers === result.correct_answers,
-    //     }));
-    //
-    //     console.log(correctAnswers)
-    // }
     let [score, setScore] = useState(0);
 
     useEffect(() => {
@@ -48,7 +49,7 @@ const TestResult = () => {
         if (!isLoading) {
             results.forEach(result => {
                 if (result.student_answers === result.correct_answers) {
-                    setScore(prevScore => prevScore + 1);
+                    setScore(prevScore => prevScore + result.score);
                 }
             });
         }
@@ -59,7 +60,6 @@ const TestResult = () => {
         isCorrect: result.student_answers === result.correct_answers
     }));
 
-
     return (<div>
         {isLoading
             ?
@@ -67,7 +67,7 @@ const TestResult = () => {
             :
             <div>
                 <h2>Câu trả lời của bạn</h2>
-                <b> {score} / {results.length} </b>
+                <b>Điểm: {score} / {test.question_score} </b>
                 <div>
                     {results.map(result => {
                         return <div className='rounded border mb-4 px-2 py-4'>

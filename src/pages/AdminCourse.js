@@ -48,7 +48,7 @@ const Course = () => {
         await fetch(`http://localhost:8080/api/v1/sections/${id}`, {
             mode: "cors",
             method: "POST"
-        }).then(() => navigate(0))
+        }).finally(() => fetchSection())
     }
 
     async function deleteFile(e) {
@@ -57,7 +57,7 @@ const Course = () => {
         await fetch(`http://localhost:8080/api/v1/file/delete/${file_id}`, {
             mode: "cors",
             method: "DELETE"
-        }).then(() => navigate(0))
+        }).then(() => fetchSection())
     }
 
     async function deletePost(e) {
@@ -104,12 +104,13 @@ const Course = () => {
                                             <div className='d-flex justify-content-between align-items-center'>
                                                 <i className='opacity-50 px-2 mt-3'>Đã đăng lúc: {Date(post.created_at).slice(0, 25)}</i>
                                                 <div className='d-flex align-items-end justify-content-end'>
-                                                    <Button className='bg-warning text-white'>Chỉnh sửa</Button>
-                                                    <form onSubmit={deletePost}>
-                                                        <input type="text" value={post.post_id} hidden/>
-                                                        <Button className='bg-danger text-white'>Xóa</Button>
-                                                    </form>
+                                                    <Link to={`/lecturer/post/${post.post_id}`}>Xem chi tiết</Link>
+                                                    {/*<form onSubmit={deletePost}>*/}
+                                                    {/*    <input type="text" value={post.post_id} hidden/>*/}
+                                                    {/*    <Button className='bg-danger text-white'>Xóa</Button>*/}
+                                                    {/*</form>*/}
                                                 </div>
+
                                             </div>
                                         </div>
                                     })}
@@ -120,20 +121,25 @@ const Course = () => {
                                     {section.files.map(file => {
                                         return file
                                             ?
-                                            <div className='d-flex justify-content-between align-items-center my-2 rounded border'>
+                                            <div className='d-flex justify-content-between align-items-center my-2 rounded border p-1'>
                                                 <div className='py-3 px-1'>
-                                                    <Link target='_blank' to={'http://localhost:8080/' + file.file_address}
+                                                    <Link to={'/lecturer/file/' + file.file_id}
                                                           key={file.file_id}>
                                                         {file.file_name}
                                                     </Link>
                                                 </div>
-                                                <div className='py-3'>
-                                                    <form onSubmit={deleteFile}>
-                                                        <input type="text" value={file.file_id} hidden/>
-                                                        <button className='float-end text-danger me-5 border-0 bg-transparent'><h4>Xóa</h4></button>
-                                                    </form>
-
+                                                <div className='d-flex justify-content-end align-items-end'>
+                                                    <div className='opacity-50 p-1'>
+                                                        Nhấn vào tập tin để xem chi tiết
+                                                    </div>
                                                 </div>
+                                                {/*<div className='py-3'>*/}
+                                                {/*    /!*<form onSubmit={deleteFile}>*!/*/}
+                                                {/*    /!*    <input type="text" value={file.file_id} hidden/>*!/*/}
+                                                {/*    /!*    <button className='float-end text-danger me-5 border-0 bg-transparent'><h4>Xóa</h4></button>*!/*/}
+                                                {/*    /!*</form>*!/*/}
+
+                                                {/*</div>*/}
                                             </div>
                                             :
                                             <></>
@@ -146,15 +152,16 @@ const Course = () => {
                                         return test
                                             ?
                                             <div className='mb-1 border rounded'>
-                                                <Link to={'http://localhost:3000/testconfirm/' + test.test_id}
+                                                <Link to={'/lecturer/test/' + test.test_id}
                                                       key={test.test_id}>
                                                     <div className='p-2'>
                                                         <p>{test.test_name}</p>
                                                     </div>
                                                 </Link>
                                                 <div className='d-flex justify-content-end align-items-end'>
-                                                    <Button className='bg-transparent text-warning'>Chỉnh sửa</Button>
-                                                    <Button className='bg-transparent text-danger'>Xóa</Button>
+                                                    <div className='opacity-50 p-1'>
+                                                        Nhấn vào bài kiểm tra để xem chi tiết
+                                                    </div>
                                                 </div>
                                             </div>
                                             :

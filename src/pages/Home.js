@@ -34,12 +34,6 @@ const Home = () => {
             .then(account => setAccount(account));
     }
 
-    async function getAClassesAPI() {
-        await fetch("http://localhost:8080/api/v1/classes/v2/lecturers/" + user.account_username)
-            .then(res => res.json())
-            .then(classes => setAclasses(classes));
-    }
-
     async function updateActivities(){
         await fetch(`http://localhost:8080/activities?account_id=${user.account_id}&activity_type=Xem+trang&activity_target=${window.location.pathname}`)
     }
@@ -50,7 +44,6 @@ const Home = () => {
             Promise.all([getTodayclassesAPI(),
                 getClassesAPI(),
                 getAccount(),
-                getAClassesAPI(),
                 updateActivities()]).finally(() => {
                 console.log('Fetching completed')
                 setIsLoading(false)
@@ -123,16 +116,9 @@ const Home = () => {
                     account.account_role === 'lecturer'
                     &&
                     <div>
-                        <h3>Các lớp của bạn</h3>
-                        {aclasses.map(aclass => {
-                            return <Link key={aclass.class_id} to={'/aclass/' + aclass.class_id}>
-                                <div className='border rounded p-3 mb-3'>
-                                    <h4>{aclass.course_name} - {aclass.class_id}</h4>
-                                    <p><i>Bắt đầu từ tiết {aclass.class_start} cho tới tiết {aclass.class_end} </i></p>
-                                    <b>{aclass.class_date}</b>
-                                </div>
-                            </Link>
-                        })}
+                        <div className='d-flex flex-column justify-content-center align-items-center'>
+                            <h4>Bắt đầu bằng cách chọn các chức năng trên thanh điền hướng</h4>
+                        </div>
                     </div>
                 }
             </div>
